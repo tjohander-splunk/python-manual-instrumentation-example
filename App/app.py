@@ -10,6 +10,7 @@ from opentelemetry.metrics import (
 )
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader, ConsoleMetricExporter
+from opentelemetry.trace import SpanKind
 
 exporter = OTLPMetricExporter(endpoint='localhost:4317', headers=None, insecure=True)
 console_exporter = ConsoleMetricExporter()
@@ -22,7 +23,8 @@ counter = meter.create_counter("otel-demo-counter")
 tracer = trace.get_tracer(__name__)
 
 for i in range(5):
-    with tracer.start_as_current_span(name="span-name") as span:
+    # SpanKind is set to ensure this "app" appears in the APM Service List, SpanKind.INTERNAL is the default
+    with tracer.start_as_current_span(name="span-name", kind=SpanKind.SERVER) as span:
         span.set_attribute("span-attribute", "attribute-value")
         span.set_attribute("is_api_call", "true")
         requests.get('http://api.github.com')
