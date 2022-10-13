@@ -1,0 +1,11 @@
+  version: "3.9"
+  services:
+    otel:
+      image: quay.io/signalfx/splunk-otel-collector:latest
+      ports:
+        - '55679:55679'
+        - '13133:13133'
+        - '4317:4317'
+      env_file: ./.env
+      volumes:
+        - ./otel-collector-config.yml:/etc/otel-collector-config.yml
